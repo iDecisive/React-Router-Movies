@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import {BrowserRouter, Route, Link} from 'react-router-dom'
 import axios from 'axios';
 
 import SavedList from './Movies/SavedList';
+import MovieList from './Movies/MovieList';
+import Movie from './Movies/Movie';
 
 const App = () => {
   const [savedList, setSavedList] = useState([]);
@@ -25,11 +28,39 @@ const App = () => {
     setSavedList([...savedList, movie]);
   };
 
+  if (!movieList) {
+
+    return (
+
+      <h1>Waiting for movies...</h1>
+
+    )
+
+  }
+
   return (
-    <div>
-      <SavedList list={savedList} />
-      <div>Replace this Div with your Routes</div>
-    </div>
+    <BrowserRouter>
+      <div>
+        <SavedList list={savedList} />
+        <Route exact path='/' component={() => <MovieList movies={movieList}/>} />
+        <Route path='/movies/:id' component={props =>{
+        
+          let { id } = props.match.params;
+          
+          return (
+            <section>
+              
+              <h1>Movie Details</h1>
+
+              <Movie mid={id} addToSavedList={addToSavedList}/> {/* addToSavedList={addToSavedList} */}
+
+            </section>
+
+          );
+        
+        }} /> {/* How to pass ID in URL to component? */}
+      </div>
+    </BrowserRouter>
   );
 };
 
